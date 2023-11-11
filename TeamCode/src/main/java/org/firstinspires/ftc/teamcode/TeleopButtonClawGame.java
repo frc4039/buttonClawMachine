@@ -3,33 +3,45 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import org.firstinspires.ftc.teamcode.BCMConstants.AnalogInputConstants;
+
+/******************************************************/
+/*        Hub Controller Status LED:                  */
+/*          - Blue: robot code booting up             */
+/*          - Green: robot code ready to run          */
+/******************************************************/
 @TeleOp(name="Teleop Button Claw Game", group="Iterative OpMode")
 
 /* What we'll need
-1. In the Driving Station, configure and name the 4 Analog Input ports
-2. Define 4 analog input variables- with names more meaningful than my "analogTest"
-3. Initialize the 4 analog input variables using hardwareMap.get()
-4. Identify all subsystem components- motors, switches, etc
-5. Create variables for each component
-6. Initialize components
+1. On the Driver Station, configure and name Analog Input ports #2 & #3- please pay attention to naming convention
+2. Define 2 more analog input variables- please pay attention to naming convention
+3. Initialize the 2 new analog input variables using hardwareMap.get()
+4. Identify all subsystem components- motors, switches, etc- make a list
+5. Create variables for each component identified in step #4
+6. Initialize component variables created in step #5
 */
 
 public class TeleopButtonClawGame extends OpMode
 {
-    AnalogInput analogTest;
-    double currentVoltage;
+    AnalogInput joystickUpAnalog0;
+    AnalogInput joystickDownAnalog1;
+    double currentVoltageUp;
+    double currentVoltageDown;
 
     @Override
     public void init()
     {
-        //the deviceName parameter is the name defined in the Driving Station
-        analogTest = hardwareMap.get(AnalogInput.class, "Analog0");
+        //the deviceName parameter is the name defined in the Driver's Station
+        joystickUpAnalog0 = hardwareMap.get(AnalogInput.class, AnalogInputConstants.kJoystickUp);
+        joystickDownAnalog1 = hardwareMap.get(AnalogInput.class, AnalogInputConstants.kJoystickDown);
     }
 
     @Override
     public void loop() {
-        currentVoltage = analogTest.getVoltage();
-        telemetry.addData("Analog 0 voltage", currentVoltage);
+        currentVoltageUp = joystickUpAnalog0.getVoltage();
+        currentVoltageDown = joystickDownAnalog1.getVoltage();
+        telemetry.addData("Analog 0 'Up' voltage: ", currentVoltageUp);
+        telemetry.addData("Analog 1 'Down' voltage: ", currentVoltageDown);
         telemetry.update();
     }
 }
