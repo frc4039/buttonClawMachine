@@ -25,8 +25,14 @@ public class TeleopButtonClawGame extends OpMode
 {
     AnalogInput joystickUpAnalog0;
     AnalogInput joystickDownAnalog1;
-    double currentVoltageUp;
-    double currentVoltageDown;
+    AnalogInput joystickLeftAnalog2;
+    AnalogInput joystickRightAnalog3;
+    double voltageUp;
+    double voltageDown;
+    double voltageLeft;
+    double voltageRight;
+
+
 
     @Override
     public void init()
@@ -34,14 +40,20 @@ public class TeleopButtonClawGame extends OpMode
         //the deviceName parameter is the name defined in the Driver's Station
         joystickUpAnalog0 = hardwareMap.get(AnalogInput.class, AnalogInputConstants.kJoystickUp);
         joystickDownAnalog1 = hardwareMap.get(AnalogInput.class, AnalogInputConstants.kJoystickDown);
+        joystickLeftAnalog2 = hardwareMap.get(AnalogInput.class, AnalogInputConstants.kJoystickLeft);
+        joystickRightAnalog3 = hardwareMap.get(AnalogInput.class, AnalogInputConstants.kJoystickRight);
     }
 
     @Override
     public void loop() {
-        currentVoltageUp = joystickUpAnalog0.getVoltage();
-        currentVoltageDown = joystickDownAnalog1.getVoltage();
-        telemetry.addData("Analog 0 'Up' voltage: ", currentVoltageUp);
-        telemetry.addData("Analog 1 'Down' voltage: ", currentVoltageDown);
+        voltageUp = joystickUpAnalog0.getVoltage();
+        voltageDown = joystickDownAnalog1.getVoltage();
+        voltageLeft = joystickLeftAnalog2.getVoltage();
+        voltageRight = joystickRightAnalog3.getVoltage();
+        telemetry.addData("Analog 0 'Up' voltage: ", voltageUp);
+        telemetry.addData("Analog 1 'Down' voltage: ", voltageDown);
+        telemetry.addData("Analog 2 'Down' voltage: ", voltageLeft);
+        telemetry.addData("Analog 3 'Down' voltage: ", voltageRight);
         telemetry.update();
     }
 }
