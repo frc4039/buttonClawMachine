@@ -13,9 +13,6 @@ import org.firstinspires.ftc.teamcode.BCMConstants.AnalogInputConstants;
 @TeleOp(name="Teleop Button Claw Game", group="Iterative OpMode")
 
 /* What we'll need
-1. On the Driver Station, configure and name Analog Input ports #2 & #3- please pay attention to naming convention
-2. Define 2 more analog input variables- please pay attention to naming convention
-3. Initialize the 2 new analog input variables using hardwareMap.get()
 4. Identify all subsystem components- motors, switches, etc- make a list
 5. Create variables for each component identified in step #4
 6. Initialize component variables created in step #5
