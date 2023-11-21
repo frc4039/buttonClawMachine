@@ -12,5 +12,7 @@ public final class BCMConstants {
         //Analog Inputs names
         public static final String kJoystickUp = "JoystickUp"; //Analog Input port #0
         public static final String kJoystickDown = "JoystickDown"; //Analog Input port #1
+        public static final String kJoystickLeft = "JoystickLeft"; //Analog Input Port #2
+        public static final String kJoystickRight = "JoystickRight"; //Analog Input Port #3
     }
 }
