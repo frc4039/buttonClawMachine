@@ -15,4 +15,9 @@ public final class BCMConstants {
         public static final String kJoystickLeft = "JoystickLeft"; //Analog Input Port #2
         public static final String kJoystickRight = "JoystickRight"; //Analog Input Port #3
     }
+
+    public static final class MotorConstants {
+        public static final String kMotorLeftRight = "MotorLeftRight"; // Left and right traversing Port #1
+        public static final String kMotorBackForward = "MotorBackForward"; //Back and forward traversing Port #0
+    }
 }

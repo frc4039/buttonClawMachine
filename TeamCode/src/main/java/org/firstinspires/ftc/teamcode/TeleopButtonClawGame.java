@@ -3,7 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 import org.firstinspires.ftc.teamcode.BCMConstants.AnalogInputConstants;
+import org.firstinspires.ftc.teamcode.BCMConstants.MotorConstants;
 
 /******************************************************/
 /*        Hub Controller Status LED:                  */
@@ -29,6 +33,9 @@ public class TeleopButtonClawGame extends OpMode
     double voltageLeft;
     double voltageRight;
 
+    DcMotor motorLeftRightP1;
+    DcMotor motorBackForwardP0;
+
 
 
     @Override
@@ -39,6 +46,14 @@ public class TeleopButtonClawGame extends OpMode
         joystickDownAnalog1 = hardwareMap.get(AnalogInput.class, AnalogInputConstants.kJoystickDown);
         joystickLeftAnalog2 = hardwareMap.get(AnalogInput.class, AnalogInputConstants.kJoystickLeft);
         joystickRightAnalog3 = hardwareMap.get(AnalogInput.class, AnalogInputConstants.kJoystickRight);
+
+        motorLeftRightP1 = hardwareMap.get(DcMotor.class, MotorConstants.kMotorLeftRight);
+        motorLeftRightP1.setDirection(DcMotor.Direction.FORWARD);
+        motorLeftRightP1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBackForwardP0 = hardwareMap.get(DcMotor.class, MotorConstants.kMotorBackForward);
+        motorBackForwardP0.setDirection(DcMotor.Direction.FORWARD);
+        motorBackForwardP0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
     }
 
     @Override
@@ -52,5 +67,18 @@ public class TeleopButtonClawGame extends OpMode
         telemetry.addData("Analog 2 'Down' voltage: ", voltageLeft);
         telemetry.addData("Analog 3 'Down' voltage: ", voltageRight);
         telemetry.update();
+
+        if (voltageUp <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
+            motorBackForwardP0.setPower(0.15);
+        }
+        else if (voltageDown <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
+            motorBackForwardP0.setPower(0.15);
+        }
+        if (voltageLeft <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
+
+        }
+        else if (voltageRight <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
+
+        }
     }
 }
