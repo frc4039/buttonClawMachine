@@ -10,14 +10,31 @@ public final class BCMConstants {
         public static final double kVoltageJoystickEngagedThreshold = 0.9;
 
         //Analog Inputs names
-        public static final String kJoystickUp = "JoystickUp"; //Analog Input port #0
-        public static final String kJoystickDown = "JoystickDown"; //Analog Input port #1
+        public static final String kJoystickForward = "JoystickForward"; //Analog Input port #0
+        public static final String kJoystickBack = "JoystickBack"; //Analog Input port #1
         public static final String kJoystickLeft = "JoystickLeft"; //Analog Input Port #2
         public static final String kJoystickRight = "JoystickRight"; //Analog Input Port #3
     }
 
+    public  static final class  DigitalInputConstants {
+        //Digital Inputs names
+        public static final String kStopSwitchBack = "StopSwitchBack";
+        public static final String kStopSwitchLeft = "StopSwitchLeft";
+        public static final String kStopSwitchRight = "StopSwitchRight";
+        //public static final String kButtonPickUpClaw = "ButtonPickUpClaw";
+    }
+
     public static final class MotorConstants {
+        //Motors power
+        public static final double kMotorPowerForward = 0.70;
+        public static final double kMotorPowerBack = - kMotorPowerForward;
+        public static final double kMotorPowerLeft = -0.40;
+        public static final double kMotorPowerRight = -kMotorPowerLeft;
+        public static final double kMotorPowerStop = 0;
+
+        //Motors Names
         public static final String kMotorLeftRight = "MotorLeftRight"; // Left and right traversing Port #1
         public static final String kMotorBackForward = "MotorBackForward"; //Back and forward traversing Port #0
+        public static final String kServoPickUpClaw = "ServoPickUpClaw";
     }
 }
