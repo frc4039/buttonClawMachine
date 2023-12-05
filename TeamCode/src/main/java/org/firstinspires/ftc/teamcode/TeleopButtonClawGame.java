@@ -20,7 +20,6 @@ import org.firstinspires.ftc.teamcode.BCMConstants.MotorConstants;
 /* What we'll need
 5. Create all other required variables
 6. Initialize component variables created in step #5
-7. Add Stop Switch logic same as done for Left movement
 8. Figure out encoder logic for stopping Forward movement
 9. On trigger button pressed, set the pickUpClawTriggered flag => might need multiple states
 */
@@ -40,8 +39,8 @@ public class TeleopButtonClawGame extends OpMode
 
     /**Switches and Button - Digital Inputs**/
     TouchSensor stopSwitchBackDigital1;
-    // another one for left on digital3
-    // another one for right on digital5
+    TouchSensor stopSwitchLeftDigital3;
+    TouchSensor stopSwitchRightDigital5;
 
     /****************************************/
 
@@ -65,6 +64,8 @@ public class TeleopButtonClawGame extends OpMode
 
         //Switches - Digital Inputs
         stopSwitchBackDigital1 = hardwareMap.get(TouchSensor.class, DigitalInputConstants.kStopSwitchBack);
+        stopSwitchLeftDigital3 = hardwareMap.get(TouchSensor.class, DigitalInputConstants.kStopSwitchLeft);
+        stopSwitchRightDigital5 = hardwareMap.get(TouchSensor.class, DigitalInputConstants.kStopSwitchRight);
         //create the other two
 
         //Motors
@@ -86,6 +87,7 @@ public class TeleopButtonClawGame extends OpMode
             voltageRight = joystickRightAnalog3.getVoltage();
 
             if (voltageForward <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
+                //check for encoder
                 motorBackForwardPort0.setPower(MotorConstants.kMotorPowerForward);
             }
             else if (voltageBack <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
@@ -104,10 +106,24 @@ public class TeleopButtonClawGame extends OpMode
             }
 
             if (voltageLeft <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
-                motorLeftRightPort1.setPower(MotorConstants.kMotorPowerLeft);
+                if(!stopSwitchLeftDigital3.isPressed())
+                {
+                    motorLeftRightPort1.setPower(MotorConstants.kMotorPowerLeft);
+                }
+                else
+                {
+                    motorLeftRightPort1.setPower(MotorConstants.kMotorPowerStop);
+                }
             }
             else if (voltageRight <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
-                motorLeftRightPort1.setPower(MotorConstants.kMotorPowerRight);
+                if(!stopSwitchRightDigital5.isPressed())
+                {
+                    motorLeftRightPort1.setPower(MotorConstants.kMotorPowerRight);
+                }
+                else
+                {
+                    motorLeftRightPort1.setPower(MotorConstants.kMotorPowerStop);
+                }
             }
             else
             {
