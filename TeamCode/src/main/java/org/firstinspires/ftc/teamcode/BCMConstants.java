@@ -18,10 +18,10 @@ public final class BCMConstants {
 
     public  static final class  DigitalInputConstants {
         //Digital Inputs names
-        public static final String kStopSwitchBack = "StopSwitchBack";
-        public static final String kStopSwitchLeft = "StopSwitchLeft";
-        public static final String kStopSwitchRight = "StopSwitchRight";
-        //public static final String kButtonPickUpClaw = "ButtonPickUpClaw";
+        public static final String kStopSwitchBack = "StopSwitchBack"; //Limiting switch on Digital port #1
+        public static final String kStopSwitchLeft = "StopSwitchLeft"; //Limiting switch on Digital port #3
+        public static final String kStopSwitchRight = "StopSwitchRight"; //Limiting switch on Digital port #5
+        public static final String kButtonPickUpClaw = "ButtonPickUpClaw"; //Claw Trigger button on Digital port #
     }
 
     public static final class MotorConstants {
@@ -33,8 +33,14 @@ public final class BCMConstants {
         public static final double kMotorPowerStop = 0;
 
         //Motors Names
-        public static final String kMotorLeftRight = "MotorLeftRight"; // Left and right traversing Port #1
+        public static final String kMotorLeftRight = "MotorLeftRight"; //Left and right traversing Port #1
         public static final String kMotorBackForward = "MotorBackForward"; //Back and forward traversing Port #0
-        public static final String kServoPickUpClaw = "ServoPickUpClaw";
+        public static final String kServoPickUpClaw = "ServoPickUpClaw"; //Claw Servo
+
+        //Positions
+        public static final double kServoPickUpPosition = 0;
+        public static final double kServoTravelPosition = 0;
+        public static final double kServoReleasePosition = 0;
+        public static final double kMotorBackForwardLimitFowardPosition = 0;
     }
 }

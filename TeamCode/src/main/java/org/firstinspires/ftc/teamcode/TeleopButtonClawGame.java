@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.BCMConstants.AnalogInputConstants;
@@ -18,6 +19,9 @@ import org.firstinspires.ftc.teamcode.BCMConstants.MotorConstants;
 @TeleOp(name="Teleop Button Claw Game", group="Iterative OpMode")
 
 /* What we'll need
+1. configure remaining components:
+    a. pickup Claw button
+    b. servo motor
 5. Create all other required variables
 6. Initialize component variables created in step #5
 8. Figure out encoder logic for stopping Forward movement
@@ -41,13 +45,13 @@ public class TeleopButtonClawGame extends OpMode
     TouchSensor stopSwitchBackDigital1;
     TouchSensor stopSwitchLeftDigital3;
     TouchSensor stopSwitchRightDigital5;
-
+    TouchSensor pickUpClawButton;
     /****************************************/
 
     /************Motors and Servo************/
     DcMotor motorLeftRightPort1;
     DcMotor motorBackForwardPort0;
-    // servo motor servoPickUpClaw
+    Servo servoMotorPickUpClaw;
     /****************************************/
 
     boolean pickUpClawTriggered = false;
@@ -56,6 +60,7 @@ public class TeleopButtonClawGame extends OpMode
     public void init()
     {
         //the deviceName parameter is the name defined in the Driver's Station
+
         //Joystick - Analog Inputs
         joystickForwardAnalog0 = hardwareMap.get(AnalogInput.class, AnalogInputConstants.kJoystickForward);
         joystickBackAnalog1 = hardwareMap.get(AnalogInput.class, AnalogInputConstants.kJoystickBack);
@@ -66,31 +71,50 @@ public class TeleopButtonClawGame extends OpMode
         stopSwitchBackDigital1 = hardwareMap.get(TouchSensor.class, DigitalInputConstants.kStopSwitchBack);
         stopSwitchLeftDigital3 = hardwareMap.get(TouchSensor.class, DigitalInputConstants.kStopSwitchLeft);
         stopSwitchRightDigital5 = hardwareMap.get(TouchSensor.class, DigitalInputConstants.kStopSwitchRight);
-        //create the other two
+        pickUpClawButton = hardwareMap.get(TouchSensor.class, DigitalInputConstants.kButtonPickUpClaw);
 
         //Motors
         motorLeftRightPort1 = CreateDCMotor(MotorConstants.kMotorLeftRight);
         motorBackForwardPort0 = CreateDCMotor(MotorConstants.kMotorBackForward);
-        //get the servo using hardwareMap
+        servoMotorPickUpClaw = hardwareMap.get(Servo.class, MotorConstants.kServoPickUpClaw);
+
+        //Initialize the Button Claw Machine
+        MoveToHomePosition();
     }
 
     @Override
     public void loop() {
+        if(pickUpClawButton.isPressed())
+        {
+            pickUpClawTriggered = true;
+            //lower servo to pickup position
+            //lift servo to travel position
+            MoveToHomePosition();
+            //lift servo to release position
+            //lower servo to travel position
+            pickUpClawTriggered = false;
+        }
+
         if (!pickUpClawTriggered)
         {
-            //Add logic to check the trigger button
-            //if pressed => pickUpClawTriggered = true
-
             voltageForward = joystickForwardAnalog0.getVoltage();
             voltageBack = joystickBackAnalog1.getVoltage();
             voltageLeft = joystickLeftAnalog2.getVoltage();
             voltageRight = joystickRightAnalog3.getVoltage();
 
             if (voltageForward <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
-                //check for encoder
-                motorBackForwardPort0.setPower(MotorConstants.kMotorPowerForward);
+                //stop driven by encoder
+                if(motorBackForwardPort0.getCurrentPosition() <= MotorConstants.kMotorBackForwardLimitFowardPosition)
+                {
+                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerForward);
+                }
+                else
+                {
+                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
+                }
             }
             else if (voltageBack <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
+                //stop driven by limiting switch
                 if(!stopSwitchBackDigital1.isPressed())
                 {
                     motorBackForwardPort0.setPower(MotorConstants.kMotorPowerBack);
@@ -106,6 +130,7 @@ public class TeleopButtonClawGame extends OpMode
             }
 
             if (voltageLeft <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
+                //stop driven by limiting switch
                 if(!stopSwitchLeftDigital3.isPressed())
                 {
                     motorLeftRightPort1.setPower(MotorConstants.kMotorPowerLeft);
@@ -116,6 +141,7 @@ public class TeleopButtonClawGame extends OpMode
                 }
             }
             else if (voltageRight <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
+                //stop driven by limiting switch
                 if(!stopSwitchRightDigital5.isPressed())
                 {
                     motorLeftRightPort1.setPower(MotorConstants.kMotorPowerRight);
@@ -130,12 +156,6 @@ public class TeleopButtonClawGame extends OpMode
                 motorLeftRightPort1.setPower(MotorConstants.kMotorPowerStop);
             }
         }
-        else
-        {
-            //Activate motorBackForwardPort0 with kMotorPowerBack
-            //Activate motorLeftRightPort1 with kMotorPowerLeft
-            //check left and back switches to turn off motors
-        }
 
         DisplayTelemetry();
     }
@@ -147,6 +167,43 @@ public class TeleopButtonClawGame extends OpMode
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         return motor;
+    }
+
+    private void MoveToHomePosition()
+    {
+        while (!(stopSwitchBackDigital1.isPressed() & stopSwitchLeftDigital3.isPressed())) {
+            if(motorBackForwardPort0.getPower() != MotorConstants.kMotorPowerBack)
+            {
+                if(!stopSwitchBackDigital1.isPressed())
+                {
+                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerBack);
+                }
+            }
+            if(stopSwitchBackDigital1.isPressed())
+            {
+                motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
+            }
+            if(motorLeftRightPort1.getPower() != MotorConstants.kMotorPowerLeft)
+            {
+                if(!stopSwitchLeftDigital3.isPressed())
+                {
+                    motorLeftRightPort1.setPower(MotorConstants.kMotorPowerLeft);
+                }
+            }
+            if(stopSwitchLeftDigital3.isPressed())
+            {
+                motorLeftRightPort1.setPower(MotorConstants.kMotorPowerStop);
+            }
+        }
+        //Turn motors off in case timing exited the loop after limiting switches were checked
+        //and therefore a motor could still be running
+        motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
+        motorLeftRightPort1.setPower(MotorConstants.kMotorPowerStop);
+
+        //Reset the back-forward motor encoder
+        motorBackForwardPort0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //Need to set the motor running mode back for normal operation
+        motorBackForwardPort0.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     private void DisplayTelemetry()
