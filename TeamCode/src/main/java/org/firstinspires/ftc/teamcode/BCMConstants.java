@@ -41,6 +41,6 @@ public final class BCMConstants {
         public static final double kServoPickUpPosition = 0;
         public static final double kServoTravelPosition = 0;
         public static final double kServoReleasePosition = 0;
-        public static final double kMotorBackForwardLimitFowardPosition = 0;
+        public static final double kMotorBackForwardLimitFowardPosition = 4830;
     }
 }

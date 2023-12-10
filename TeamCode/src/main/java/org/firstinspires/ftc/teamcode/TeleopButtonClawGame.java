@@ -87,11 +87,11 @@ public class TeleopButtonClawGame extends OpMode
         if(pickUpClawButton.isPressed())
         {
             pickUpClawTriggered = true;
-            //lower servo to pickup position
-            //lift servo to travel position
+            MovePickUpClawToPosition(MotorConstants.kServoPickUpPosition);
+            MovePickUpClawToPosition(MotorConstants.kServoTravelPosition);
             MoveToHomePosition();
-            //lift servo to release position
-            //lower servo to travel position
+            MovePickUpClawToPosition(MotorConstants.kServoReleasePosition);
+            MovePickUpClawToPosition(MotorConstants.kServoTravelPosition);
             pickUpClawTriggered = false;
         }
 
@@ -122,6 +122,7 @@ public class TeleopButtonClawGame extends OpMode
                 else
                 {
                     motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
+                    ResetMotorEncoder(motorBackForwardPort0, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 }
             }
             else
@@ -201,13 +202,26 @@ public class TeleopButtonClawGame extends OpMode
         motorLeftRightPort1.setPower(MotorConstants.kMotorPowerStop);
 
         //Reset the back-forward motor encoder
-        motorBackForwardPort0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        ResetMotorEncoder(motorBackForwardPort0, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        MovePickUpClawToPosition(MotorConstants.kServoTravelPosition);
+    }
+
+    private void ResetMotorEncoder(DcMotor motor, DcMotor.RunMode previousMode)
+    {
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //Need to set the motor running mode back for normal operation
-        motorBackForwardPort0.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBackForwardPort0.setMode(previousMode);
+    }
+
+    private void MovePickUpClawToPosition(double targetPosition)
+    {
+        //move the servo to the target postion
     }
 
     private void DisplayTelemetry()
     {
+        telemetry.addData("Back/Forward Motor Encoder: ", motorBackForwardPort0.getCurrentPosition());
         telemetry.addData("Analog 0 'Forward' voltage: ", voltageForward);
         telemetry.addData("Analog 1 'Back' voltage: ", voltageBack);
         telemetry.addData("Analog 2 'Left' voltage: ", voltageLeft);
