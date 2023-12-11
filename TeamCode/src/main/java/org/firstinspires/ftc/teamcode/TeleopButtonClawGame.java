@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.BCMConstants.AnalogInputConstants;
@@ -17,17 +17,6 @@ import org.firstinspires.ftc.teamcode.BCMConstants.MotorConstants;
 /*          - Green: robot code ready to run          */
 /******************************************************/
 @TeleOp(name="Teleop Button Claw Game", group="Iterative OpMode")
-
-/* What we'll need
-1. configure remaining components:
-    a. pickup Claw button
-    b. servo motor
-5. Create all other required variables
-6. Initialize component variables created in step #5
-8. Figure out encoder logic for stopping Forward movement
-9. On trigger button pressed, set the pickUpClawTriggered flag => might need multiple states
-*/
-
 public class TeleopButtonClawGame extends OpMode
 {
     /********Joystick - Analog Inputs********/
@@ -51,10 +40,11 @@ public class TeleopButtonClawGame extends OpMode
     /************Motors and Servo************/
     DcMotor motorLeftRightPort1;
     DcMotor motorBackForwardPort0;
-    Servo servoMotorPickUpClaw;
+    CRServo servoMotorPickUpClaw;
     /****************************************/
 
     boolean pickUpClawTriggered = false;
+    int servoPort;
 
     @Override
     public void init()
@@ -76,10 +66,11 @@ public class TeleopButtonClawGame extends OpMode
         //Motors
         motorLeftRightPort1 = CreateDCMotor(MotorConstants.kMotorLeftRight);
         motorBackForwardPort0 = CreateDCMotor(MotorConstants.kMotorBackForward);
-        servoMotorPickUpClaw = hardwareMap.get(Servo.class, MotorConstants.kServoPickUpClaw);
+        servoMotorPickUpClaw = CreateCRServoMotor(MotorConstants.kServoPickUpClaw);
 
         //Initialize the Button Claw Machine
         MoveToHomePosition();
+        MovePickUpClawToPosition(MotorConstants.kServoTravelPosition);
     }
 
     @Override
@@ -170,6 +161,15 @@ public class TeleopButtonClawGame extends OpMode
         return motor;
     }
 
+    private CRServo CreateCRServoMotor(String servoName)
+    {
+        CRServo servo = hardwareMap.get(CRServo.class, servoName);
+        servoPort = servo.getPortNumber();
+        servo.setPower(MotorConstants.kServoPowerOn);
+
+        return servo;
+    }
+
     private void MoveToHomePosition()
     {
         while (!(stopSwitchBackDigital1.isPressed() & stopSwitchLeftDigital3.isPressed())) {
@@ -216,7 +216,7 @@ public class TeleopButtonClawGame extends OpMode
 
     private void MovePickUpClawToPosition(double targetPosition)
     {
-        //move the servo to the target postion
+        servoMotorPickUpClaw.getController().setServoPosition(servoPort, targetPosition);
     }
 
     private void DisplayTelemetry()
@@ -226,6 +226,7 @@ public class TeleopButtonClawGame extends OpMode
         telemetry.addData("Analog 1 'Back' voltage: ", voltageBack);
         telemetry.addData("Analog 2 'Left' voltage: ", voltageLeft);
         telemetry.addData("Analog 3 'Right' voltage: ", voltageRight);
+        telemetry.addData("Servo Position: ", servoMotorPickUpClaw.getController().getServoPosition(0));
         telemetry.update();
     }
 }

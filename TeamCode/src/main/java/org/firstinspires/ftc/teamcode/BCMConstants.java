@@ -31,6 +31,7 @@ public final class BCMConstants {
         public static final double kMotorPowerLeft = -0.40;
         public static final double kMotorPowerRight = -kMotorPowerLeft;
         public static final double kMotorPowerStop = 0;
+        public static final double kServoPowerOn = 1;
 
         //Motors Names
         public static final String kMotorLeftRight = "MotorLeftRight"; //Left and right traversing Port #1
