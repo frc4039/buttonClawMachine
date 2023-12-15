@@ -98,7 +98,7 @@ public class TeleopButtonClawGame extends OpMode
             voltageRight = joystickRightAnalog3.getVoltage();
 
             if (voltageForward <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
-                servoMotorPickUpClaw.setPower(1);
+                servoMotorPickUpClaw.setPower(MotorConstants.kServoPowerMoveDown);
                 //stop driven by encoder
 //                if(motorBackForwardPort0.getCurrentPosition() <= MotorConstants.kMotorBackForwardLimitFowardPosition)
 //                {
@@ -110,7 +110,7 @@ public class TeleopButtonClawGame extends OpMode
 //                }
             }
             else if (voltageBack <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
-                servoMotorPickUpClaw.setPower(-1);
+                servoMotorPickUpClaw.setPower(MotorConstants.kServoPowerMoveUp);
                 //stop driven by limiting switch
 //                if(!stopSwitchBackDigital1.isPressed())
 //                {
@@ -124,7 +124,7 @@ public class TeleopButtonClawGame extends OpMode
             }
             else
             {
-                servoMotorPickUpClaw.setPower(0);
+                servoMotorPickUpClaw.setPower(MotorConstants.kMotorPowerStop);
                 //motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
             }
 
