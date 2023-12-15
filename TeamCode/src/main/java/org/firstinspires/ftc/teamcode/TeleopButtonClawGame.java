@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.BCMConstants.AnalogInputConstants;
 import org.firstinspires.ftc.teamcode.BCMConstants.DigitalInputConstants;
 import org.firstinspires.ftc.teamcode.BCMConstants.MotorConstants;
 
+import java.util.concurrent.TimeUnit;
+
 /******************************************************/
 /*        Hub Controller Status LED:                  */
 /*          - Blue: robot code booting up             */
@@ -66,11 +68,13 @@ public class TeleopButtonClawGame extends OpMode
         //Motors
         motorLeftRightPort1 = CreateDCMotor(MotorConstants.kMotorLeftRight);
         motorBackForwardPort0 = CreateDCMotor(MotorConstants.kMotorBackForward);
-        servoMotorPickUpClaw = CreateCRServoMotor(MotorConstants.kServoPickUpClaw);
+
+        //Setup servo
+        servoMotorPickUpClaw = hardwareMap.get(CRServo.class, MotorConstants.kServoPickUpClaw);
+        servoPort = servoMotorPickUpClaw.getPortNumber();
 
         //Initialize the Button Claw Machine
         MoveToHomePosition();
-        MovePickUpClawToPosition(MotorConstants.kServoTravelPosition);
     }
 
     @Override
@@ -78,11 +82,11 @@ public class TeleopButtonClawGame extends OpMode
         if(pickUpClawButton.isPressed())
         {
             pickUpClawTriggered = true;
-            MovePickUpClawToPosition(MotorConstants.kServoPickUpPosition);
-            MovePickUpClawToPosition(MotorConstants.kServoTravelPosition);
+            //claw to pickup position
+            //claw to travel position
             MoveToHomePosition();
-            MovePickUpClawToPosition(MotorConstants.kServoReleasePosition);
-            MovePickUpClawToPosition(MotorConstants.kServoTravelPosition);
+            //claw to release position
+            //claw to travel position
             pickUpClawTriggered = false;
         }
 
@@ -94,31 +98,34 @@ public class TeleopButtonClawGame extends OpMode
             voltageRight = joystickRightAnalog3.getVoltage();
 
             if (voltageForward <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
+                servoMotorPickUpClaw.setPower(1);
                 //stop driven by encoder
-                if(motorBackForwardPort0.getCurrentPosition() <= MotorConstants.kMotorBackForwardLimitFowardPosition)
-                {
-                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerForward);
-                }
-                else
-                {
-                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
-                }
+//                if(motorBackForwardPort0.getCurrentPosition() <= MotorConstants.kMotorBackForwardLimitFowardPosition)
+//                {
+//                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerForward);
+//                }
+//                else
+//                {
+//                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
+//                }
             }
             else if (voltageBack <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
+                servoMotorPickUpClaw.setPower(-1);
                 //stop driven by limiting switch
-                if(!stopSwitchBackDigital1.isPressed())
-                {
-                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerBack);
-                }
-                else
-                {
-                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
-                    ResetMotorEncoder(motorBackForwardPort0, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                }
+//                if(!stopSwitchBackDigital1.isPressed())
+//                {
+//                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerBack);
+//                }
+//                else
+//                {
+//                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
+//                    ResetMotorEncoder(motorBackForwardPort0, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                }
             }
             else
             {
-                motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
+                servoMotorPickUpClaw.setPower(0);
+                //motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
             }
 
             if (voltageLeft <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
@@ -161,15 +168,6 @@ public class TeleopButtonClawGame extends OpMode
         return motor;
     }
 
-    private CRServo CreateCRServoMotor(String servoName)
-    {
-        CRServo servo = hardwareMap.get(CRServo.class, servoName);
-        servoPort = servo.getPortNumber();
-        servo.setPower(MotorConstants.kServoPowerOn);
-
-        return servo;
-    }
-
     private void MoveToHomePosition()
     {
         while (!(stopSwitchBackDigital1.isPressed() & stopSwitchLeftDigital3.isPressed())) {
@@ -203,8 +201,6 @@ public class TeleopButtonClawGame extends OpMode
 
         //Reset the back-forward motor encoder
         ResetMotorEncoder(motorBackForwardPort0, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        MovePickUpClawToPosition(MotorConstants.kServoTravelPosition);
     }
 
     private void ResetMotorEncoder(DcMotor motor, DcMotor.RunMode previousMode)
@@ -214,9 +210,9 @@ public class TeleopButtonClawGame extends OpMode
         motorBackForwardPort0.setMode(previousMode);
     }
 
-    private void MovePickUpClawToPosition(double targetPosition)
+    private void MoveServoUpDown(double direction)
     {
-        servoMotorPickUpClaw.getController().setServoPosition(servoPort, targetPosition);
+        servoMotorPickUpClaw.setPower(direction);
     }
 
     private void DisplayTelemetry()
@@ -226,7 +222,7 @@ public class TeleopButtonClawGame extends OpMode
         telemetry.addData("Analog 1 'Back' voltage: ", voltageBack);
         telemetry.addData("Analog 2 'Left' voltage: ", voltageLeft);
         telemetry.addData("Analog 3 'Right' voltage: ", voltageRight);
-        telemetry.addData("Servo Position: ", servoMotorPickUpClaw.getController().getServoPosition(0));
+        telemetry.addData("Servo Position: ", servoMotorPickUpClaw.getController().getServoPosition(servoPort));
         telemetry.update();
     }
 }

@@ -31,7 +31,8 @@ public final class BCMConstants {
         public static final double kMotorPowerLeft = -0.40;
         public static final double kMotorPowerRight = -kMotorPowerLeft;
         public static final double kMotorPowerStop = 0;
-        public static final double kServoPowerOn = 1;
+        public static final double kServoPowerMoveDown = 1;
+        public static final double kServoPowerMoveUp = -1;
 
         //Motors Names
         public static final String kMotorLeftRight = "MotorLeftRight"; //Left and right traversing Port #1
@@ -39,9 +40,6 @@ public final class BCMConstants {
         public static final String kServoPickUpClaw = "ServoPickUpClaw"; //Claw Servo
 
         //Positions
-        public static final double kServoPickUpPosition = 0;
-        public static final double kServoTravelPosition = 0;
-        public static final double kServoReleasePosition = 0;
         public static final double kMotorBackForwardLimitFowardPosition = 4830;
     }
 }
