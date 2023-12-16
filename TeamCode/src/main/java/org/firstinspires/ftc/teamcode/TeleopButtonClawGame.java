@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.CountDownTimer;
+import android.os.Looper;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -11,6 +14,10 @@ import org.firstinspires.ftc.teamcode.BCMConstants.AnalogInputConstants;
 import org.firstinspires.ftc.teamcode.BCMConstants.DigitalInputConstants;
 import org.firstinspires.ftc.teamcode.BCMConstants.MotorConstants;
 
+import java.time.LocalTime;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 /******************************************************/
@@ -75,6 +82,9 @@ public class TeleopButtonClawGame extends OpMode
 
         //Initialize the Button Claw Machine
         MoveToHomePosition();
+
+        MoveServoUpDownByTimespan(MotorConstants.kServoPowerMoveDown, 1000);
+        //MoveServoUpDownByTimespan(MotorConstants.kServoPowerMoveUp, 1000);
     }
 
     @Override
@@ -98,34 +108,31 @@ public class TeleopButtonClawGame extends OpMode
             voltageRight = joystickRightAnalog3.getVoltage();
 
             if (voltageForward <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
-                servoMotorPickUpClaw.setPower(MotorConstants.kServoPowerMoveDown);
                 //stop driven by encoder
-//                if(motorBackForwardPort0.getCurrentPosition() <= MotorConstants.kMotorBackForwardLimitFowardPosition)
-//                {
-//                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerForward);
-//                }
-//                else
-//                {
-//                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
-//                }
+                if(motorBackForwardPort0.getCurrentPosition() <= MotorConstants.kMotorBackForwardLimitFowardPosition)
+                {
+                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerForward);
+                }
+                else
+                {
+                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
+                }
             }
             else if (voltageBack <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
-                servoMotorPickUpClaw.setPower(MotorConstants.kServoPowerMoveUp);
                 //stop driven by limiting switch
-//                if(!stopSwitchBackDigital1.isPressed())
-//                {
-//                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerBack);
-//                }
-//                else
-//                {
-//                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
-//                    ResetMotorEncoder(motorBackForwardPort0, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//                }
+                if(!stopSwitchBackDigital1.isPressed())
+                {
+                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerBack);
+                }
+                else
+                {
+                    motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
+                    ResetMotorEncoder(motorBackForwardPort0, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                }
             }
             else
             {
-                servoMotorPickUpClaw.setPower(MotorConstants.kMotorPowerStop);
-                //motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
+                motorBackForwardPort0.setPower(MotorConstants.kMotorPowerStop);
             }
 
             if (voltageLeft <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
@@ -210,9 +217,16 @@ public class TeleopButtonClawGame extends OpMode
         motorBackForwardPort0.setMode(previousMode);
     }
 
-    private void MoveServoUpDown(double direction)
+    private void MoveServoUpDownByTimespan(double direction, int milliseconds)
     {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MILLISECOND, milliseconds);
+        Date end = calendar.getTime();
         servoMotorPickUpClaw.setPower(direction);
+        do
+        {
+        } while(end.compareTo(Calendar.getInstance().getTime()) > 0);
+        servoMotorPickUpClaw.setPower(MotorConstants.kMotorPowerStop);
     }
 
     private void DisplayTelemetry()
