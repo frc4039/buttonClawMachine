@@ -32,7 +32,7 @@ public final class BCMConstants {
         public static final double kMotorPowerRight = -kMotorPowerLeft;
         public static final double kMotorPowerStop = 0;
         public static final double kServoPowerMoveDown = 1;
-        public static final double kServoPowerMoveUp = -1;
+        public static final double kServoPowerMoveUp = -kServoPowerMoveDown;
 
         //Motors Names
         public static final String kMotorLeftRight = "MotorLeftRight"; //Left and right traversing Port #1
@@ -41,5 +41,14 @@ public final class BCMConstants {
 
         //Positions
         public static final double kMotorBackForwardLimitFowardPosition = 4830;
+
+        //Claw travel times. All these values are milliseconds
+        public static final int kServoTimeToPickupPositionDown = 3710; //The magnet must be flash with the release tube
+        public static final int kServoTimeToTravelPositionUp = 1500; //Time to travel position from pickup position
+        public static final int kServoTimeToReleasePositionUp = 1600; //Time to release position from travel position
+        public static final int kServoTimeToResetPositionDown = 100; //Time to reset position to flash with release tube from release position
+
+        //Time specific
+        public static final int kServoMoveDelaySeconds = 1; //Time to stop between servo movements
     }
 }

@@ -24,6 +24,11 @@ import java.util.concurrent.TimeUnit;
 /*        Hub Controller Status LED:                  */
 /*          - Blue: robot code booting up             */
 /*          - Green: robot code ready to run          */
+/*          - Purple: driver station config mode      */
+/******************************************************/
+/******************************************************/
+/*    Claw Travel Vertical distances:                 */
+/*            - Full length: 9 1/2 inches             */
 /******************************************************/
 @TeleOp(name="Teleop Button Claw Game", group="Iterative OpMode")
 public class TeleopButtonClawGame extends OpMode
@@ -82,9 +87,6 @@ public class TeleopButtonClawGame extends OpMode
 
         //Initialize the Button Claw Machine
         MoveToHomePosition();
-
-        MoveServoUpDownByTimespan(MotorConstants.kServoPowerMoveDown, 1000);
-        //MoveServoUpDownByTimespan(MotorConstants.kServoPowerMoveUp, 1000);
     }
 
     @Override
@@ -92,11 +94,11 @@ public class TeleopButtonClawGame extends OpMode
         if(pickUpClawButton.isPressed())
         {
             pickUpClawTriggered = true;
-            //claw to pickup position
-            //claw to travel position
+            MoveServoUpDownByTimespan(MotorConstants.kServoPowerMoveDown, MotorConstants.kServoTimeToPickupPositionDown);
+            MoveServoUpDownByTimespan(MotorConstants.kServoPowerMoveUp, MotorConstants.kServoTimeToTravelPositionUp);
             MoveToHomePosition();
-            //claw to release position
-            //claw to travel position
+            MoveServoUpDownByTimespan(MotorConstants.kServoPowerMoveUp, MotorConstants.kServoTimeToReleasePositionUp);
+            MoveServoUpDownByTimespan(MotorConstants.kServoPowerMoveDown, MotorConstants.kServoTimeToResetPositionDown);
             pickUpClawTriggered = false;
         }
 
@@ -222,11 +224,22 @@ public class TeleopButtonClawGame extends OpMode
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MILLISECOND, milliseconds);
         Date end = calendar.getTime();
-        servoMotorPickUpClaw.setPower(direction);
         do
         {
+            if(servoMotorPickUpClaw.getPower() != direction)
+            {
+                servoMotorPickUpClaw.setPower(direction);
+            }
         } while(end.compareTo(Calendar.getInstance().getTime()) > 0);
         servoMotorPickUpClaw.setPower(MotorConstants.kMotorPowerStop);
+
+        //Introduce a delay before finishing
+        Calendar calendarDelay = Calendar.getInstance();
+        calendarDelay.add(Calendar.SECOND, MotorConstants.kServoMoveDelaySeconds);
+        Date endDelay = calendarDelay.getTime();
+        do
+        {
+        } while(endDelay.compareTo(Calendar.getInstance().getTime()) > 0);
     }
 
     private void DisplayTelemetry()
