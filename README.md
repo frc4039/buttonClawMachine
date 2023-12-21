@@ -1,14 +1,12 @@
-## NOTICE
-
-This repository contains the public FTC SDK for the CENTERSTAGE (2023-2024) competition season.
+## Connection
+adb connect 192.168.43.1:5555
+The third number- and maybe the fourth as well- is specific to the Control Hub. Our Button Claw Machine is using .43.1                                                
 
 ## Welcome!
-This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
+This GitHub repository contains the source code that is used to build an Android app to control our Button Claw Machine robot.  To use this SDK, download/clone the entire project to your local computer.
 
 ## Requirements
 To use this Android Studio project, you will need Android Studio 2021.2 (codename Chipmunk) or later.
-
-To program your robot in Blocks or OnBot Java, you do not need Android Studio.
 
 ## Getting Started
 [Android Studio reference](https://ftc-docs.firstinspires.org/programming_resources/android_studio_java/Android-Studio-Tutorial.html).
