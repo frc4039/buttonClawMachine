@@ -178,7 +178,7 @@ public class TeleopButtonClawGame extends OpMode
 
             if (voltageLeft <= AnalogInputConstants.kVoltageJoystickEngagedThreshold) {
                 //stop driven by limiting switch
-                if(true || !stopSwitchLeftDigital3.isPressed())
+                if(!stopSwitchLeftDigital3.isPressed())
                 {
                     motorLeftRightPort1.setPower(MotorConstants.kMotorPowerLeft);
                 }
