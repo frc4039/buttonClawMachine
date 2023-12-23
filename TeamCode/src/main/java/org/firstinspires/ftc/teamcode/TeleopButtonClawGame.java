@@ -78,6 +78,8 @@ public class TeleopButtonClawGame extends OpMode
 
         //Initialize the Button Claw Machine
         MoveToHomePosition();
+
+        ResetMotorEncoder(motorPickUpClawPort2, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
